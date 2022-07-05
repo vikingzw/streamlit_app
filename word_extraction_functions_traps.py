@@ -5,118 +5,166 @@ import os
 import numpy as np
 
 def retrieve_NO(result):
-    index = []
     for i in range(len(result)-1):
         if (result[i] == 'Sample') & (result[i+1] == 'No.:'):
-            return result[i+2]
+            k = 0
+            while result[i+k] != 'Examiner:':
+                k+=1
+
+            return ' '.join(result[(i+2):(i+k)])
     return 'Not Found'
 
 
 def retrieve_date(result):
-    index = []
     for i in range(len(result)-2):
         if (result[i] == 'Date') & (result[i+2] == 'sampling:'):
-            return result[i+3]
+            k = 0
+            while result[i+k] != 'Sampling':
+                k+=1
+
+            return ' '.join(result[(i+3):(i+k)])
     return 'Not Found'
 
 
 def retrieve_sampling_place(result):
-    index = []
     for i in range(len(result)-1):
         if (result[i] == 'Sampling') & (result[i+1] == 'place:'):
-            return result[i+2] + result[i+3]
-    return 'Not Found'
+            k = 0
+            while result[i+k] != 'Date':
+                k+=1
 
+            return ' '.join(result[(i+2):(i+k)])
+    return 'Not Found'
 
 def retrieve_contamination_time(result):
     for i in range(len(result)-1):
         if (result[i] == 'Contamination') & (result[i+1] == 'time'):
-            return result[i+3]
-    return 'Not Found'
+            k = 0
+            while result[i+k] != 'Evaluated':
+                k+=1
 
+            return ' '.join(result[(i+3):(i+k)])
+    return 'Not Found'
 
 def retrieve_largest_metallic_particle_length(result):
     for i in range(len(result)-2):
         if (result[i] == 'Largest') & (result[i+1] == 'metallic'):
-            return result[i+5]
-    return 'Not Found'
+            k = 0
+            while result[i+k] != 'Width':
+                k+=1
 
+            return ' '.join(result[(i+5):(i+k)])
+    return 'Not Found'
 
 def retrieve_largest_metallic_particle_width(result):
     for i in range(len(result)-2):
         if (result[i] == 'Largest') & (result[i+1] == 'metallic'):
-            return result[i+8]
+            k = 1
+            while result[i+k] != 'Largest':
+                k+=1
+
+            return ' '.join(result[(i+8):(i+k)])
     return 'Not Found'
 
 
 def retrieve_largest_nonmetallic_particle_length(result):
     for i in range(len(result)-2):
         if (result[i] == 'Largest') & (result[i+1] == 'nonmetallic'):
-            return result[i+5]
+            k = 1
+            while result[i+k] != 'Width':
+                k+=1
+
+            return ' '.join(result[(i+5):(i+k)])
     return 'Not Found'
 
 
 def retrieve_largest_nonmetallic_particle_width(result):
     for i in range(len(result)-2):
         if (result[i] == 'Largest') & (result[i+1] == 'nonmetallic'):
-            return result[i+8]
-    return 'Not Found'
+            k = 1
+            while result[i+k] != 'Fibre':
+                k+=1
 
+            return ' '.join(result[(i+8):(i+k)])
+    return 'Not Found'
 
 def retrieve_TCV(result):
     for i in range(len(result)):
         if result[i] == 'TCV:':
-            return result[i+1]
+            k = 0
+            while result[i+k] != 'MCV:':
+                k+=1
+
+            return ' '.join(result[(i+1):(i+k)])
     return 'Not Found'
 
-
 def retrieve_MCV(result):
-    index = []
     for i in range(len(result)):
         if result[i] == 'MCV:':
-            return result[i+1]
+            k = 0
+            while result[i+k] != 'FCV:':
+                k+=1
+
+            return ' '.join(result[(i+1):(i+k)])
     return 'Not Found'
 
 
 def retrieve_FCV(result):
-    index = []
     for i in range(len(result)):
         if result[i] == 'FCV:':
-            return result[i+1]
+            k = 0
+            while result[i+k] != 'Remarks:':
+                k+=1
+
+            return ' '.join(result[(i+1):(i+k)])
     return 'Not Found'
 
-def clean_data(df):
-    def fff(x):
-        if x == 'CoatingDate':
-            return 'Coating'
-        if x == 'PressingDate':
-            return 'Pressing'
-        if x == 'StackingDate':
-            return 'Stacking'
-        if x == 'Evaluated':
-            return 'Not Found'
-        if x == 'MCV:':
-            return 'Not Found'
-        if x == 'FCV:':
-            return 'Not Found'
-        if x == 'Remarks:':
-            return 'Not Found'
-        if x == 'Width':
-            return 'Not Found'
-        if x == 'nonmetallic':
-            return 'Not Found'
-        return x
+# def clean_data(df):
+#     def fff(x):
+#         if x == 'CoatingDate':
+#             return 'Coating'
+#         if x == 'PressingDate':
+#             return 'Pressing'
+#         if x == 'StackingDate':
+#             return 'Stacking'
+#         if x == 'Evaluated':
+#             return 'Not Found'
+#         if x == 'MCV:':
+#             return 'Not Found'
+#         if x == 'FCV:':
+#             return 'Not Found'
+#         if x == 'Remarks:':
+#             return 'Not Found'
+#         if x == 'Width':
+#             return 'Not Found'
+#         if x == 'nonmetallic':
+#             return 'Not Found'
+#         return x
 
-    df['Sampling Place'] = df['Sampling Place'].apply(lambda x: fff(x))
-    df['Contamination Time'] = df['Contamination Time'].apply(lambda x: fff(x))
-    df['TCV'] = df['TCV'].apply(lambda x: fff(x))
-    df['MCV'] = df['MCV'].apply(lambda x: fff(x))
-    df['FCV'] = df['FCV'].apply(lambda x: fff(x))
-    df['Largest Metallic Particle Length (micro m)'] = df['Largest Metallic Particle Length (micro m)'].apply(
-        lambda x: fff(x))
-    df['Largest Metallic Particle Width (micro m)'] = df['Largest Metallic Particle Width (micro m)'].apply(
-        lambda x: fff(x))
-    return df
+#     df['Sampling Place'] = df['Sampling Place'].apply(lambda x: fff(x))
+#     df['Contamination Time'] = df['Contamination Time'].apply(lambda x: fff(x))
+#     df['TCV'] = df['TCV'].apply(lambda x: fff(x))
+#     df['MCV'] = df['MCV'].apply(lambda x: fff(x))
+#     df['FCV'] = df['FCV'].apply(lambda x: fff(x))
+#     df['Largest Metallic Particle Length (micro m)'] = df['Largest Metallic Particle Length (micro m)'].apply(
+#         lambda x: fff(x))
+#     df['Largest Metallic Particle Width (micro m)'] = df['Largest Metallic Particle Width (micro m)'].apply(
+#         lambda x: fff(x))
+#     return df
+
+def create_alert_col(col):
+    alert_col = []
+    for elem in col:
+        if elem != 'Not Found':
+            if elem<250:
+                alert_col.append('Green')
+            elif 250<=elem<500:
+                alert_col.append('Yellow')
+            else:
+                alert_col.append('Red')
+        else:
+            alert_col.append('Particle not found')
+    return alert_col
 
 def get_traps_data(files):
 
@@ -139,16 +187,12 @@ def get_traps_data(files):
                         'Largest Nonmetallic Particle Width (micro m)': retrieve_largest_nonmetallic_particle_width(parsed_text)},index=[0])
         df = pd.concat([df,tmp_df],axis=0,ignore_index=True)
 
-    df['Alert'] = np.where(df['Largest Metallic Particle Width (micro m)'].astype(float) < 250,'Green',
-            np.where(df['Largest Metallic Particle Width (micro m)'].astype(float) < 500,'Yellow','Red'))
-
-    
-    df = clean_data(df)
-    df = df.astype('float64',copy=True,errors='ignore')
-    
-    df['Sampling Date'] = pd.to_datetime(df['Sampling Date'],format='%d/%m/%Y').dt.date
-    df['Sampling Date'] = df['Sampling Date']
-    df.sort_values(by='Sampling Date',inplace=True)
+    df['Sampling Date'] = pd.to_datetime(df['Sampling Date'],format='%d/%m/%Y',errors='coerce').dt.date
+    df['Sampling Date'].fillna('Not Found',inplace=True)
+    df.iloc[:,3:] = df.iloc[:,3:].replace(to_replace='',value=99999.0) 
+    df.iloc[:,3:] = df.iloc[:,3:].astype('float64',copy=True,errors='ignore')
+    df.replace(to_replace=99999.0,value='Not Found',inplace=True) 
+    df['Alert'] = create_alert_col(df['Largest Metallic Particle Width (micro m)'])
 
     # df.info()
 

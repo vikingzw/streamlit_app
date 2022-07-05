@@ -47,14 +47,21 @@ def main():
   
     files = st.file_uploader('Upload files',type=['docx'],accept_multiple_files=True)
 
-    if len(files)>0:
 
+    if len(files)>0:
         if test_type == 'Traps':
-            df = get_traps_data(files)
+            try:
+                df = get_traps_data(files)
+            finally:
+                st.write(""" ### Reload the page when switching from Traps to Stamps or vice versa. """)
             start_date = df['Sampling Date'].iloc[0]
             end_date = df['Sampling Date'].iloc[-1]
         else:
-            df = get_stamps_data(files)
+            try:
+                df = get_stamps_data(files)
+            finally:
+                st.write(""" ### Reload the page when switching from Traps to Stamps or vice versa. """)
+
             start_date = df['Date of extraction'].iloc[0]
             end_date = df['Date of extraction'].iloc[-1]
 
@@ -68,6 +75,7 @@ def main():
             data = df_xlsx,
             file_name = fname)
 
+        # st.write('Reload the page when switching from Traps to Stamps or vice versa.')
 
 
 

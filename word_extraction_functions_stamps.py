@@ -320,6 +320,20 @@ def retrieve_particle_count_B(result,type):
             return ' '.join(result[(category_pos+type):(category_pos+j-4+type)])
     return 'Not Found'    
 
+def create_alert_col(col):
+    alert_col = []
+    for elem in col:
+        if elem != 'Not Found':
+            if elem<250:
+                alert_col.append('Green')
+            elif 250<=elem<500:
+                alert_col.append('Yellow')
+            else:
+                alert_col.append('Red')
+        else:
+            alert_col.append('Particle not found')
+    return alert_col
+
 def get_stamps_data(files):
     
     df = pd.DataFrame(columns=['Component type', 'Component No.', 'Sample No.','Tested Area', 'Date of extraction', 
@@ -373,16 +387,25 @@ def get_stamps_data(files):
                         'Non-Metallic particle count B': retrieve_particle_count_B(parsed_text,2)},index=[0])
         df = pd.concat([df,tmp_df],axis=0,ignore_index=True)
 
-    df['Alert'] = np.where(df['Largest metallic particle width [micro m]'].astype(float) < 250,'Green',
-        np.where(df['Largest metallic particle width [micro m]'].astype(float) < 500,'Yellow','Red'))
 
-    df.replace(to_replace='',value=99999.0,inplace=True) 
-    # for i,col in enumerate(df.columns):
-    #     if i > 4:
-    #         df.astype({col:'float64'})
-    df = df.astype('float64',copy=True,errors='ignore')
-    df['Date of extraction'] = pd.to_datetime(df['Date of extraction'],format='%d/%m/%Y').dt.date
-    df.sort_values(by='Date of extraction',inplace=True)
+    
+    df['Date of extraction'] = pd.to_datetime(df['Date of extraction'],format='%d/%m/%Y',errors='coerce').dt.date
+    df.iloc[:,5:] = df.iloc[:,5:].replace(to_replace='',value=99999.0) 
+    df.iloc[:,5:] = df.iloc[:,5:].astype('float64',copy=True,errors='ignore')
     df.replace(to_replace=99999.0,value='Not Found',inplace=True) 
+    df['Alert'] = create_alert_col(df['Largest metallic particle width [micro m]'])
+
+
+    # df['Alert'] = np.where(df['Largest metallic particle width [micro m]'].astype(float) < 250,'Green',
+    #     np.where(df['Largest metallic particle width [micro m]'].astype(float) < 500,'Yellow','Red'))
+
+    # df.replace(to_replace='',value=99999.0,inplace=True) 
+    # # for i,col in enumerate(df.columns):
+    # #     if i > 4:
+    # #         df.astype({col:'float64'})
+    # df = df.astype('float64',copy=True,errors='ignore')
+    # df['Date of extraction'] = pd.to_datetime(df['Date of extraction'],format='%d/%m/%Y').dt.date
+    # df.sort_values(by='Date of extraction',inplace=True)
+    # df.replace(to_replace=99999.0,value='Not Found',inplace=True) 
 
     return df
