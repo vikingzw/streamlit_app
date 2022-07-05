@@ -33,7 +33,7 @@ def main():
         menu_items=None
         )
 
-    st.title('Summarize Reports')
+    st.title('Hello Johan')
 
     ###################################################################################
     st.write(""" ## Select test type""")
