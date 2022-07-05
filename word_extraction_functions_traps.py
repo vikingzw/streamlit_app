@@ -193,7 +193,7 @@ def get_traps_data(files):
     df.iloc[:,3:] = df.iloc[:,3:].astype('float64',copy=True,errors='ignore')
     df.replace(to_replace=99999.0,value='Not Found',inplace=True) 
     df['Alert'] = create_alert_col(df['Largest Metallic Particle Width (micro m)'])
-
+    df.sort_values(by='Sampling Date',ascending=False)
     # df.info()
 
     return df

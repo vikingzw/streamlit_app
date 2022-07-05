@@ -394,7 +394,7 @@ def get_stamps_data(files):
     df.iloc[:,5:] = df.iloc[:,5:].astype('float64',copy=True,errors='ignore')
     df.replace(to_replace=99999.0,value='Not Found',inplace=True) 
     df['Alert'] = create_alert_col(df['Largest metallic particle width [micro m]'])
-
+    df.sort_values(by='Date of extraction',ascending=False)
 
     # df['Alert'] = np.where(df['Largest metallic particle width [micro m]'].astype(float) < 250,'Green',
     #     np.where(df['Largest metallic particle width [micro m]'].astype(float) < 500,'Yellow','Red'))
