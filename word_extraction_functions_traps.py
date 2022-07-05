@@ -188,12 +188,12 @@ def get_traps_data(files):
         df = pd.concat([df,tmp_df],axis=0,ignore_index=True)
 
     df['Sampling Date'] = pd.to_datetime(df['Sampling Date'],format='%d/%m/%Y',errors='coerce').dt.date
+    df.sort_values(by='Sampling Date',inplace=True)
     df['Sampling Date'].fillna('Not Found',inplace=True)
     df.iloc[:,3:] = df.iloc[:,3:].replace(to_replace='',value=99999.0) 
     df.iloc[:,3:] = df.iloc[:,3:].astype('float64',copy=True,errors='ignore')
     df.replace(to_replace=99999.0,value='Not Found',inplace=True) 
     df['Alert'] = create_alert_col(df['Largest Metallic Particle Width (micro m)'])
-    df.sort_values(by='Sampling Date',ascending=False)
     # df.info()
 
     return df
