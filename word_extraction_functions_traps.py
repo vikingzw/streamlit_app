@@ -168,13 +168,13 @@ def create_alert_col(col):
 
 def get_traps_data(files):
 
-    df = pd.DataFrame(columns=['Test N', 'Sampling Date', 'Sampling Place',
+    df = pd.DataFrame(columns=['Test No.', 'Sampling Date', 'Sampling Place',
                     'Contamination Time', 'TCV', 'MCV', 'FCV'])
 
     for i in range(len(files)):
         text = docx2txt.process(files[i])
         parsed_text = text.split()
-        tmp_df = pd.DataFrame(data={'Test N': retrieve_NO(parsed_text),
+        tmp_df = pd.DataFrame(data={'Test No.': retrieve_NO(parsed_text),
                         'Sampling Date': retrieve_date(parsed_text),
                         'Sampling Place': retrieve_sampling_place(parsed_text),
                         'Contamination Time': retrieve_contamination_time(parsed_text),
@@ -188,7 +188,7 @@ def get_traps_data(files):
         df = pd.concat([df,tmp_df],axis=0,ignore_index=True)
 
     df['Sampling Date'] = pd.to_datetime(df['Sampling Date'],format='%d/%m/%Y',errors='coerce').dt.date
-    df.sort_values(by='Sampling Date',inplace=True)
+    df.sort_values(by='Test No.',inplace=True)
     df['Sampling Date'].fillna('Not Found',inplace=True)
     df.iloc[:,3:] = df.iloc[:,3:].replace(to_replace='',value=99999.0) 
     df.iloc[:,3:] = df.iloc[:,3:].astype('float64',copy=True,errors='ignore')

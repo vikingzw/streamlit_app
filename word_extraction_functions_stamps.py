@@ -337,7 +337,7 @@ def create_alert_col(col):
 
 def get_stamps_data(files):
     
-    df = pd.DataFrame(columns=['Component type', 'Component No.', 'Sample No.','Tested Area', 'Date of extraction', 
+    df = pd.DataFrame(columns=['Sample No.','Component type', 'Component No.','Tested Area', 'Date of extraction', 
                         'Largest metallic particle length [micro m]', 'Largest metallic particle width [micro m]',
                         'Largest nonmetallic particle length [micro m]','Largest nonmetallic particle width [micro m]',
                         'Metallic particle count N','Non-Metallic particle count N','Metallic particle count M','Non-Metallic particle count M',
@@ -351,9 +351,10 @@ def get_stamps_data(files):
     for i in range(len(files)):
         text = docx2txt.process(files[i])
         parsed_text = text.split()
-        tmp_df = pd.DataFrame(data={'Component type': retrieve_component_type(parsed_text),
-                        'Component No.': retrieve_component_no(parsed_text),
+        tmp_df = pd.DataFrame(data={
                         'Sample No.': retrieve_sample_no(parsed_text),
+                        'Component type': retrieve_component_type(parsed_text),
+                        'Component No.': retrieve_component_no(parsed_text),
                         'Tested Area': retrieve_tested_area(parsed_text),
                         'Date of extraction': retrieve_date_of_extraction(parsed_text),
                         'Largest metallic particle length [micro m]': retrieve_largest_metallic_particle_length(parsed_text),
@@ -391,7 +392,7 @@ def get_stamps_data(files):
 
     
     df['Date of extraction'] = pd.to_datetime(df['Date of extraction'],format='%d/%m/%Y',errors='coerce')
-    # df.sort_values(by='Date of extraction',ascending=False)
+    df.sort_values(by='Sample No.',inplace=True)
     df['Date of extraction'] = df['Date of extraction'].dt.date
     df.iloc[:,5:] = df.iloc[:,5:].replace(to_replace='',value=99999.0) 
     df.iloc[:,5:] = df.iloc[:,5:].astype('float64',copy=True,errors='ignore')
