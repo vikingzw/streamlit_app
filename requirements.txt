@@ -6,3 +6,5 @@ pyxlsb==1.0.9
 six==1.16.0
 openpyxl==3.0.10
 XlsxWriter==3.0.3
+docx==0.2.4
+docx2txt==0.8
